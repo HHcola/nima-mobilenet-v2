@@ -16,7 +16,7 @@ import tensorflow as tf
 
 from utils.utils import ensure_dir_exists
 from handlers.data_loader import load_tid_data, load_ava_data
-from handlers.loss_fun import earth_mover_loss_tanh
+from handlers.loss_fun import earth_mover_loss_tanh, earth_mover_loss
 from handlers.evaluation import pearson_correlation, spearman_corr
 from callback.tensorboardbatch import TensorBoardBatch
 from handlers.data_generator import TrainDataGenerator, val_generator
@@ -36,7 +36,8 @@ def train(train_image_paths,
           weights_name,
           batchsize,
           epochs,
-          steps):
+          steps,
+          loss_type):
     base_model = MobileNetV2((image_size, image_size, 3), alpha=1.0, include_top=False, pooling='avg')
     for layer in base_model.layers:
         layer.trainable = False
@@ -54,7 +55,13 @@ def train(train_image_paths,
     model.summary()
     # 优化器
     optimizer = Adam(lr=1e-3)
-    model.compile(optimizer, loss=earth_mover_loss_tanh, metrics=[pearson_correlation, spearman_corr])
+
+    if loss_type == 'med':
+        loss_fun = earth_mover_loss
+    else:
+        loss_fun = earth_mover_loss_tanh
+
+    model.compile(optimizer, loss=loss_fun, metrics=[pearson_correlation, spearman_corr])
     # tensorflow variables need to be initialized before calling model.fit()
     # there is also a tf.global_variables_initializer(); that one doesn't seem to do the trick
     # You will still get a FailedPreconditionError
@@ -98,6 +105,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     data_type = args.__dict__['data_type']
+    loss_fun_type = args.__dict__['loss_type']
     ava_images_path = r'/home/cola/work/nenet/nima/images-data/AVA_dataset/images/images/'
     ava_score_path = r'/home/cola/work/nenet/nima/images-data/AVA_dataset/AVA.txt'
 
@@ -108,22 +116,31 @@ if __name__ == '__main__':
         ensure_dir_exists(ava_images_path)
         ensure_dir_exists(ava_score_path)
         X, Y = load_ava_data(ava_images_path, ava_score_path)
-        weights_type_name = '../weights/mobilenet_v2_ava_weights.h5'
     else:
         ensure_dir_exists(tip_images_path)
         ensure_dir_exists(tip_score_path)
         X, Y = load_tid_data(tip_images_path, tip_score_path)
-        weights_type_name = '../weights/mobilenet_v2_tid_weights.h5'
 
-    # TODO
+    if loss_fun_type == 'med':
+        loss_type = 'med'
+    else:
+        loss_type = 'medt'
 
-    train(train_image_paths=X,
-          train_image_scores=Y,
-          val_image_paths=X,
-          val_image_scores=Y,
+    weights_type_name = '../weights/mobilenet_v2_' + data_type + '_' + loss_type + '_weights.h5'
+
+    train_images = X[:-5000]
+    train_scores = Y[:-5000]
+    val_images = X[-5000:]
+    val_scores = Y[-5000:]
+
+    train(train_image_paths=train_images,
+          train_image_scores=train_scores,
+          val_image_paths=val_images,
+          val_image_scores=val_scores,
           image_size=224,
           weights_name=weights_type_name,
           batchsize=200,
           epochs=5,
-          steps=1
+          steps=1,
+          loss_type=loss_type
           )
