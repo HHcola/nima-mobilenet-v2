@@ -2,6 +2,9 @@
 import argparse
 import os
 
+import sys
+
+sys.path.append(os.path.abspath("../"))
 from keras.applications import MobileNetV2
 from keras.models import Model
 from keras.layers import Dense, Dropout
@@ -90,6 +93,7 @@ def train(train_image_paths,
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--data-type', help='train data type:ava,tid', required=False)
+    parser.add_argument('-l', '--loss-type', help='loss function type:emd,emdt', required=False)
 
     args = parser.parse_args()
 
@@ -104,12 +108,12 @@ if __name__ == '__main__':
         ensure_dir_exists(ava_images_path)
         ensure_dir_exists(ava_score_path)
         X, Y = load_ava_data(ava_images_path, ava_score_path)
-        weights_type_name = 'weights/mobilenet_v2_ava_weights.h5'
+        weights_type_name = '../weights/mobilenet_v2_ava_weights.h5'
     else:
         ensure_dir_exists(tip_images_path)
         ensure_dir_exists(tip_score_path)
         X, Y = load_tid_data(tip_images_path, tip_score_path)
-        weights_type_name = 'weights/mobilenet_v2_tid_weights.h5'
+        weights_type_name = '../weights/mobilenet_v2_tid_weights.h5'
 
     # TODO
 
