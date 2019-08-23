@@ -3,6 +3,7 @@ import numpy as np
 import argparse
 from path import Path
 from keras.applications import MobileNetV2
+from keras.applications import MobileNet
 from keras.models import Model
 from keras.layers import Dense, Dropout
 from keras.applications.mobilenet import preprocess_input
@@ -18,14 +19,20 @@ def evaluate(imgs,
              model_weights_path,
              save_path,
              target_size,
-             rank_images
+             rank_images,
+             loss_type
              ):
     """
     evaluate
     :return:
     """
     with tf.device('/CPU:0'):
-        base_model = MobileNetV2((None, None, 3), alpha=1.0, include_top=False, pooling='avg', weights=None)
+
+        if loss_type == 'med':
+            base_model = MobileNet((None, None, 3), alpha=1.0, include_top=False, pooling='avg', weights=None)
+        else:
+            base_model = MobileNetV2((None, None, 3), alpha=1.0, include_top=False, pooling='avg', weights=None)
+
         x = Dropout(0.75)(base_model.output)
         x = Dense(10, activation='softmax')(x)
 
@@ -107,7 +114,7 @@ if __name__ == '__main__':
     else:
         loss_type = 'medt'
 
-    weights_type_name = '../weights/mobilenet_v2_' + data_type + '_' + loss_type + '_weights.h5'
+    weights_path = '../weights/mobilenet_v2_' + data_type + '_' + loss_type + '_weights.h5'
 
     if args.dir is not None:
         print("Loading images from directory : ", args.dir)
@@ -126,8 +133,10 @@ if __name__ == '__main__':
     else:
         save_score_path = args.sf
 
+    print("evaluate : args.dir = %s, weights_path = %s, save_score_path = %s",
+          args.dir, weights_path, save_score_path)
     evaluate(imgs=imgs_path,
-             model_weights_path=weights_type_name,
+             model_weights_path=weights_path,
              save_path=save_score_path,
              target_size=target_image_size,
              rank_images=rank_images_score

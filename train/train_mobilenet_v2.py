@@ -6,6 +6,7 @@ import sys
 
 sys.path.append(os.path.abspath("../"))
 from keras.applications import MobileNetV2
+from keras.applications import MobileNet
 from keras.models import Model
 from keras.layers import Dense, Dropout
 from keras.callbacks import ModelCheckpoint
@@ -37,8 +38,14 @@ def train(train_image_paths,
           batchsize,
           epochs,
           steps,
-          loss_type):
-    base_model = MobileNetV2((image_size, image_size, 3), alpha=1.0, include_top=False, pooling='avg')
+          loss_ftype):
+    if loss_ftype == 'med':
+        loss_fun = earth_mover_loss
+        base_model = MobileNet((image_size, image_size, 3), alpha=1.0, include_top=False, pooling='avg')
+    else:
+        loss_fun = earth_mover_loss_tanh
+        base_model = MobileNetV2((image_size, image_size, 3), alpha=1.0, include_top=False, pooling='avg')
+
     for layer in base_model.layers:
         layer.trainable = False
 
@@ -55,11 +62,6 @@ def train(train_image_paths,
     model.summary()
     # 优化器
     optimizer = Adam(lr=1e-3)
-
-    if loss_type == 'med':
-        loss_fun = earth_mover_loss
-    else:
-        loss_fun = earth_mover_loss_tanh
 
     model.compile(optimizer, loss=loss_fun, metrics=[pearson_correlation, spearman_corr])
     # tensorflow variables need to be initialized before calling model.fit()
@@ -86,7 +88,8 @@ def train(train_image_paths,
     history = model.fit_generator(generator=training_generator,
                                   steps_per_epoch=steps,
                                   epochs=epochs, verbose=1, callbacks=callbacks,
-                                  validation_data=val_generator(batchsize=batchsize, image_paths=val_image_paths, image_scores=val_image_scores),
+                                  validation_data=val_generator(batchsize=batchsize, image_paths=val_image_paths,
+                                                                image_scores=val_image_scores),
                                   validation_steps=20)
 
     # plot metrics
