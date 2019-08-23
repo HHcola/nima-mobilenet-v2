@@ -1,0 +1,3 @@
+*.pyc
+train/logs
+train/weights

@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7f9c2357-3302-41f2-99d3-fc05c16aabb0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/cola.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/callback/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/callback/tensorboardbatch.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/evaluater/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/evaluater/evaluate_mobilenet_v2.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/handlers/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/handlers/data_generator.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/handlers/data_loader.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/handlers/evaluation.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/handlers/loss_fun.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/train/train_mobilenet_v2.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/utils/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/utils/check_dataset.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/utils/score_utils.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/utils/utils.py" />
-    </list>
+    <list default="true" id="7f9c2357-3302-41f2-99d3-fc05c16aabb0" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -29,11 +11,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="data_generator.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="data_generator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/handlers/data_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="113">
-              <caret line="54" column="53" lean-forward="true" selection-start-line="54" selection-start-column="53" selection-end-line="54" selection-end-column="53" />
+            <state relative-caret-position="-103">
+              <caret line="51" column="54" lean-forward="true" selection-start-line="51" selection-start-column="54" selection-end-line="51" selection-end-column="54" />
               <folding>
                 <element signature="e#23#41#0" expanded="true" />
               </folding>
@@ -51,11 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="utils.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="utils.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/utils/utils.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="90">
-              <caret line="29" column="26" lean-forward="false" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="26" />
+              <caret line="29" column="32" lean-forward="false" selection-start-line="29" selection-start-column="32" selection-end-line="29" selection-end-column="32" />
               <folding>
                 <element signature="e#23#32#0" expanded="true" />
               </folding>
@@ -169,13 +151,13 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/handlers/evaluation.py" />
-        <option value="$PROJECT_DIR$/utils/utils.py" />
         <option value="$PROJECT_DIR$/handlers/loss_fun.py" />
         <option value="$PROJECT_DIR$/callback/tensorboardbatch.py" />
         <option value="$PROJECT_DIR$/evaluater/evaluate_mobilenet_v2.py" />
         <option value="$PROJECT_DIR$/handlers/data_loader.py" />
         <option value="$PROJECT_DIR$/train/train_mobilenet_v2.py" />
         <option value="$PROJECT_DIR$/handlers/data_generator.py" />
+        <option value="$PROJECT_DIR$/utils/utils.py" />
       </list>
     </option>
   </component>
@@ -234,15 +216,6 @@
               <item name="nima-mobilenet-v2" type="b2602c69:ProjectViewProjectNode" />
               <item name="nima-mobilenet-v2" type="462c0819:PsiDirectoryNode" />
               <item name="utils" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="nima-mobilenet-v2" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-            <path>
-              <item name="nima-mobilenet-v2" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 2.7.12 (/usr/bin/python2.7) &gt;" type="70bed36:NamedLibraryElementNode" />
             </path>
           </expand>
           <select />
@@ -561,16 +534,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="29" column="26" lean-forward="false" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="26" />
-          <folding>
-            <element signature="e#23#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/train/train_mobilenet_v2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="111">
@@ -591,10 +554,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/handlers/data_generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="54" column="53" lean-forward="true" selection-start-line="54" selection-start-column="53" selection-end-line="54" selection-end-column="53" />
+        <state relative-caret-position="-103">
+          <caret line="51" column="54" lean-forward="true" selection-start-line="51" selection-start-column="54" selection-end-line="51" selection-end-column="54" />
           <folding>
             <element signature="e#23#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="29" column="32" lean-forward="false" selection-start-line="29" selection-start-column="32" selection-end-line="29" selection-end-column="32" />
+          <folding>
+            <element signature="e#23#32#0" expanded="true" />
           </folding>
         </state>
       </provider>
