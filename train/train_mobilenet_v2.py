@@ -94,10 +94,10 @@ def train(train_image_paths,
 
     # plot metrics
     pyplot.plot(history.history['pearson_correlation'])
-    pyplot.show()
+    pyplot.savefig(loss_ftype + '_pearson.png')
 
     pyplot.plot(history.history['spearman_corr'])
-    pyplot.show()
+    pyplot.savefig(loss_ftype + '_spearman')
 
 
 if __name__ == '__main__':
