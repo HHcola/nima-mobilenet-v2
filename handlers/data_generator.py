@@ -7,8 +7,8 @@ import keras
 from tensorflow.python.ops import control_flow_ops, math_ops
 from utils.utils import is_png, is_gif, load_image, random_crop, random_horizontal_flip
 
-
 IMAGE_SIZE = 224
+
 
 def parse_image_data(filename):
     '''
@@ -78,23 +78,15 @@ class TrainDataGenerator(keras.utils.Sequence):
         self.shuffle = shuffle
 
     def __len__(self):
-        # 计算每一个epoch的迭代次数
         return np.math.ceil(len(self.train_image) / float(self.batch_size))
 
     def __getitem__(self, index):
-        # 生成每个batch数据，这里就根据自己对数据的读取方式进行发挥了
-        # 生成batch_size个索引
         batch_indexs = self.indexes[index * self.batch_size:(index + 1) * self.batch_size]
-        # 根据索引获取datas集合中的数据
         batch_train_image = [self.train_image[k] for k in batch_indexs]
-
-        # 生成数据
         X, y = self.data_generation(batch_train_image)
-
         return X, y
 
     def on_epoch_end(self):
-        # 在每一次epoch结束是否需要进行一次随机，重新随机一下index
         if self.shuffle:
             np.random.shuffle(self.indexes)
 
@@ -102,7 +94,6 @@ class TrainDataGenerator(keras.utils.Sequence):
         images = []
         labels = []
 
-        # 生成数据
         for i, data in enumerate(batch_train_image):
             img = load_image(data, self.img_load_dims)
             if img is not None:
