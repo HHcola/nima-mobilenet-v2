@@ -43,7 +43,6 @@ with open(ava_dataset_path, mode='r') as f:
         if i % count == 0 and i != 0:
             print('Loaded %0.2f of the dataset' % (i / 255000. * 100))
 
-
 train_image_paths = np.array(train_image_paths)
 train_scores = np.array(train_scores, dtype='float32')
 
@@ -52,6 +51,24 @@ def parse_data(filename):
     image = tf.read_file(filename)
     image = tf.image.decode_image(image, channels=3)
     return image
+
+
+def is_jpg(filename):
+    try:
+        ii = Image.open(filename)
+        return ii.format == 'JPEG'
+    except IOError:
+        return False
+
+
+def is_valid_jpg(jpg_file):
+    if jpg_file.split('.')[-1].lower() == 'jpg':
+        with open(jpg_file, 'rb') as ff:
+            ff.seek(-2, 2)
+            return ff.read() == '\xff\xd9'
+    else:
+        return True
+
 
 sess = tf.Session()
 with sess.as_default():
@@ -65,40 +82,24 @@ with sess.as_default():
         try:
             sess.run(img, feed_dict={fn: path})
         except Exception as e:
-            # rename file
             os.rename(path, path + '_bk')
-            print(path, "failed to load !" + e.message)
+            print(path, "failed to load !")
             print()
             count += 1
-
+            continue
+        print(count, "images load !")
         try:
-            img = Image.open(path)
-            if not img.verify():
-                os.rename(path, path + '_bk')
-                print(path, "failed to load !" + e.message)
-                print()
-        except IOError:
-            # rename file
+            if is_jpg(path):
+                if not is_valid_jpg(path):
+                    os.rename(path, path + '_bk')
+                    count += 1
+                    continue
+        except Exception as e:
             os.rename(path, path + '_bk')
-            print(path, "failed to load !" + e.message)
+            print(path, "failed to load !")
             print()
             count += 1
-
-        # noinspection PyBroadException
-        try:
-            img = np.asarray(img)
-        except:
-            print('corrupt img', path)
-
+            continue
     print(count, "images failed to load !")
 
 print("All done !")
-
-"""
-Had to delete file : 440774.jpg and remove row from AVA.txt
-Had to delete file : 179118.jpg and remove row from AVA.txt
-Had to delete file : 371434.jpg and remove row from AVA.txt
-Had to delete file : 277832.jpg and remove row from AVA.txt
-Had to delete file : 230701.jpg and remove row from AVA.txt
-Had to delete file : 729377.jpg and remove row from AVA.txt
-"""
