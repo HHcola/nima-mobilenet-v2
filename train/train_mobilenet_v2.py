@@ -37,7 +37,8 @@ def train(train_image_paths,
           weights_name,
           batchsize,
           epochs,
-          steps,
+          steps_epoch,
+          val_steps,
           loss_ftype):
     if loss_ftype == 'med':
         loss_fun = earth_mover_loss
@@ -86,11 +87,11 @@ def train(train_image_paths,
     # steps_per_epoch
     # validation_steps=ceil(val_dataset_size/batch_size),
     history = model.fit_generator(generator=training_generator,
-                                  steps_per_epoch=steps,
+                                  steps_per_epoch=steps_epoch,
                                   epochs=epochs, verbose=1, callbacks=callbacks,
                                   validation_data=val_generator(batchsize=batchsize, image_paths=val_image_paths,
                                                                 image_scores=val_image_scores),
-                                  validation_steps=20)
+                                  validation_steps=val_steps)
 
     # plot metrics
     pyplot.plot(history.history['pearson_correlation'])
@@ -136,14 +137,20 @@ if __name__ == '__main__':
     val_images = X[-5000:]
     val_scores = Y[-5000:]
 
+    batch_size = 200
+    epoch_size = 20
+    steps_per_epoch = (train_images.size // batch_size)
+    val_steps_epoch = (5000. // batch_size)
+
     train(train_image_paths=train_images,
           train_image_scores=train_scores,
           val_image_paths=val_images,
           val_image_scores=val_scores,
           image_size=224,
           weights_name=weights_type_name,
-          batchsize=200,
-          epochs=5,
-          steps=1,
+          batchsize=batch_size,
+          epochs=epoch_size,
+          steps_epoch=steps_per_epoch,
+          val_steps=val_steps_epoch,
           loss_ftype=loss_type
           )
