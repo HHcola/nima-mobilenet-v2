@@ -21,5 +21,3 @@ Use the `train\train_mobilenet_v2.py` scripts for direct training.
 - Keras
 - Tensorflow (CPU to evaluate, GPU to train)
 - Numpy
-- Path.py
-- PIL
