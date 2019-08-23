@@ -1,5 +1,5 @@
-# NIMA: Neural Image Assessment
-Implementation of [NIMA: Neural Image Assessment](https://arxiv.org/abs/1709.05424) in Keras + Tensorflow with weights for MobileNetV2 model trained on AVA and TID dataset.
+# Neural Image Assessment
+Implementation of Neural Image Assessment in Keras + Tensorflow with weights for MobileNetV2 model trained on AVA and TID dataset.
 
 # Usage
 ## Evaluation
