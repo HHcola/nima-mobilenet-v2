@@ -41,13 +41,13 @@ def train(train_image_paths,
     for layer in base_model.layers:
         layer.trainable = False
 
-    # Dropout 正则化，防止过拟合
+    # Dropout
     # rate：0-1
     x = Dropout(0.75)(base_model.output)
 
-    # Dense 全连接层
-    # units：正整数，输出空间维度
-    # activation：激活函数
+    # Dense
+    # units：
+    # activation：
     x = Dense(10, activation='softmax')(x)
 
     model = Model(base_model.input, x)
@@ -74,7 +74,7 @@ def train(train_image_paths,
                                             train_image_scores,
                                             batchsize)
 
-    # steps_per_epoch 一个epoch包含的步数（每一步是一个batch的数据输入） steps_per_epoch = image_size(63461) / batchsize
+    # steps_per_epoch
     # validation_steps=ceil(val_dataset_size/batch_size),
     history = model.fit_generator(generator=training_generator,
                                   steps_per_epoch=steps,
