@@ -145,5 +145,5 @@ if __name__ == '__main__':
           batchsize=200,
           epochs=5,
           steps=1,
-          loss_type=loss_type
+          loss_ftype=loss_type
           )
