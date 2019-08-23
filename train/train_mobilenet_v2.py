@@ -20,7 +20,7 @@ from handlers.data_loader import load_tid_data, load_ava_data
 from handlers.loss_fun import earth_mover_loss_tanh, earth_mover_loss
 from handlers.evaluation import pearson_correlation, spearman_corr
 from callback.tensorboardbatch import TensorBoardBatch
-from handlers.data_generator import TrainDataGenerator, val_generator
+from handlers.data_generator import TrainDataGenerator, val_generator, train_generator
 
 '''
 Below is a modification to the TensorBoard callback to perform 
@@ -79,9 +79,9 @@ def train(train_image_paths,
     tensorboard = TensorBoardBatch()
     callbacks = [checkpoint, tensorboard]
 
-    training_generator = TrainDataGenerator(train_image_paths,
-                                            train_image_scores,
-                                            batchsize)
+    training_generator = train_generator(batchsize,
+                                         train_image_paths,
+                                         train_image_scores)
 
     # steps_per_epoch
     # validation_steps=ceil(val_dataset_size/batch_size),

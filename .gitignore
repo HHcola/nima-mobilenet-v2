@@ -2,3 +2,4 @@
 train/logs
 train/weights
 .idea/
+weights/
