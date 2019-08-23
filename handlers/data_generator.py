@@ -10,12 +10,13 @@ from utils.utils import is_png, is_gif, load_image, random_crop, random_horizont
 IMAGE_SIZE = 224
 
 
-def parse_image_data(filename):
+def parse_image_data(filename, scores):
     '''
     Loads the image file, and randomly applies crops and flips to each image.
 
     Args:
         filename: the filename from the record
+        scores: the scores from the record
 
     Returns:
         an image referred to by the filename and its scores
@@ -26,7 +27,7 @@ def parse_image_data(filename):
     image = tf.random_crop(image, size=(IMAGE_SIZE, IMAGE_SIZE, 3))
     image = tf.image.random_flip_left_right(image)
     image = (tf.cast(image, tf.float32) - 127.5) / 127.5
-    return image
+    return image, scores
 
 
 def parse_data_without_augmentation(filename, scores):
@@ -103,6 +104,42 @@ class TrainDataGenerator(keras.utils.Sequence):
                 labels.append(self.train_scores[i])
 
         return np.array(images), np.array(labels)
+
+
+def train_generator(batchsize, image_paths, image_scores):
+    '''
+    Creates a python generator that loads the AVA dataset images without random data
+    augmentation and generates numpy arrays to feed into the Keras model for training.
+
+    Args:
+        batchsize: batchsize for validation set
+
+    Returns:
+        a batch of samples (X_images, y_scores)
+    '''
+    with tf.Session() as sess:
+        val_dataset = tf.data.Dataset.from_tensor_slices((image_paths, image_scores))
+        val_dataset = val_dataset.map(parse_image_data)
+
+        val_dataset = val_dataset.batch(batchsize)
+        val_dataset = val_dataset.repeat()
+        val_iterator = val_dataset.make_initializable_iterator()
+
+        val_batch = val_iterator.get_next()
+
+        sess.run(val_iterator.initializer)
+
+        while True:
+            try:
+                X_batch, y_batch = sess.run(val_batch)
+                yield (X_batch, y_batch)
+            except:
+                val_iterator = val_dataset.make_initializable_iterator()
+                sess.run(val_iterator.initializer)
+                val_batch = val_iterator.get_next()
+
+                X_batch, y_batch = sess.run(val_batch)
+                yield (X_batch, y_batch)
 
 
 def val_generator(batchsize, image_paths, image_scores):
