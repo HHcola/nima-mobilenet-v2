@@ -100,11 +100,14 @@ def train(train_image_paths,
     pyplot.plot(history.history['spearman_corr'])
     pyplot.savefig(loss_ftype + '_spearman')
 
+    pyplot.plot(history.history['loss_fun'])
+    pyplot.savefig(loss_ftype + 'loss_fun.png')
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--data-type', help='train data type:ava,tid', required=False)
-    parser.add_argument('-l', '--loss-type', help='loss function type:emd,emdt', required=False)
+    parser.add_argument('-l', '--loss-type', help='loss function type:med,medt', required=False)
 
     args = parser.parse_args()
 
