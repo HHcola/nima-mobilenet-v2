@@ -145,7 +145,7 @@ if __name__ == '__main__':
     steps_per_epoch = (train_images.size // batch_size)
     val_steps_epoch = (5000. // batch_size)
 
-    print('loss_fun_type = %s, weights_type_name = %s' % loss_fun_type, weights_type_name)
+    print('loss_fun_type = %s, weights_type_name = %s' % (loss_fun_type, weights_type_name))
 
     train(train_image_paths=train_images,
           train_image_scores=train_scores,
