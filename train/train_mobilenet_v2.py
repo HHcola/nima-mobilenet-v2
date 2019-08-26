@@ -3,8 +3,8 @@ import argparse
 import os
 
 import sys
-
 sys.path.append(os.path.abspath("../"))
+
 from keras.applications import MobileNetV2
 from keras.applications import MobileNet
 from keras.models import Model
@@ -21,6 +21,7 @@ from handlers.loss_fun import earth_mover_loss_tanh, earth_mover_loss
 from handlers.evaluation import pearson_correlation, spearman_corr
 from callback.tensorboardbatch import TensorBoardBatch
 from handlers.data_generator import TrainDataGenerator, val_generator, train_generator
+
 
 '''
 Below is a modification to the TensorBoard callback to perform 

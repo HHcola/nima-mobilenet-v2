@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*
+import os
+import sys
+sys.path.append(os.path.abspath("../"))
+
 import numpy as np
 import argparse
 from path import Path
@@ -10,9 +14,8 @@ from keras.applications.mobilenet import preprocess_input
 from keras.preprocessing.image import load_img, img_to_array
 import tensorflow as tf
 
-from handlers.data_loader import load_ava_data, load_tid_data
 from utils.score_utils import mean_score, std_score
-from utils.utils import ensure_dir_exists
+
 
 
 def evaluate(imgs,
@@ -99,15 +102,6 @@ if __name__ == '__main__':
 
     data_type = args.__dict__['data_type']
     loss_fun_type = args.__dict__['loss_type']
-    ava_images_path = r'/home/cola/work/nenet/nima/images-data/AVA_dataset/images/images/'
-    tip_images_path = r'/home/cola/work/nenet/nima/images-data/tid2013/distorted_images/'
-
-    if data_type == 'ava':
-        ensure_dir_exists(ava_images_path)
-        X, Y = load_ava_data(ava_images_path, ava_score_path)
-    else:
-        ensure_dir_exists(tip_images_path)
-        X, Y = load_tid_data(tip_images_path, tip_score_path)
 
     if loss_fun_type == 'med':
         loss_type = 'med'
@@ -139,5 +133,6 @@ if __name__ == '__main__':
              model_weights_path=weights_path,
              save_path=save_score_path,
              target_size=target_image_size,
-             rank_images=rank_images_score
+             rank_images=rank_images_score,
+             loss_type=loss_type
              )
