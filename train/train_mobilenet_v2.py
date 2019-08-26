@@ -100,9 +100,6 @@ def train(train_image_paths,
     pyplot.plot(history.history['spearman_corr'])
     pyplot.savefig(loss_ftype + '_spearman')
 
-    pyplot.plot(history.history['loss_fun'])
-    pyplot.savefig(loss_ftype + 'loss_fun.png')
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
