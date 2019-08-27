@@ -3,6 +3,7 @@ import argparse
 import os
 
 import sys
+
 sys.path.append(os.path.abspath("../"))
 
 from keras.applications import MobileNetV2
@@ -22,12 +23,29 @@ from handlers.evaluation import pearson_correlation, spearman_corr
 from callback.tensorboardbatch import TensorBoardBatch
 from handlers.data_generator import TrainDataGenerator, val_generator, train_generator
 
-
 '''
 Below is a modification to the TensorBoard callback to perform 
 batchwise writing to the tensorboard, instead of only at the end
 of the batch.
 '''
+
+
+def saveFig(history,
+            key,
+            val_key,
+            title,
+            ylabel,
+            datatype,
+            loss_ftype
+            ):
+    pyplot.figure()
+    pyplot.plot(history.history[key])
+    pyplot.plot(history.history[val_key])
+    pyplot.title(title)
+    pyplot.ylabel(ylabel)
+    pyplot.xlabel('epoch')
+    pyplot.legend(['train', 'validation'], loc='upper left')
+    pyplot.savefig(datatype + '_' + loss_ftype + '_' + ylabel + '.png')
 
 
 def train(train_image_paths,
@@ -66,7 +84,7 @@ def train(train_image_paths,
     # 优化器
     optimizer = Adam(lr=1e-3)
 
-    model.compile(optimizer, loss=loss_fun, metrics=[pearson_correlation, spearman_corr])
+    model.compile(optimizer, loss=loss_fun, metrics=['accuracy', pearson_correlation, spearman_corr])
     # tensorflow variables need to be initialized before calling model.fit()
     # there is also a tf.global_variables_initializer(); that one doesn't seem to do the trick
     # You will still get a FailedPreconditionError
@@ -96,16 +114,46 @@ def train(train_image_paths,
                                   validation_steps=val_steps)
 
     print(history.history.keys())
-    
+
     # plot metrics
-    pyplot.plot(history.history['pearson_correlation'])
-    pyplot.savefig(data_type + '_' + loss_ftype + '_pearson.png')
+    saveFig(history=history,
+            key='pearson_correlation',
+            val_key='val_pearson_correlation',
+            title='Pearson Correlation',
+            ylabel='pearson correlation',
+            datatype=data_type,
+            loss_ftype=loss_type
+            )
 
-    pyplot.plot(history.history['spearman_corr'])
-    pyplot.savefig(data_type + '_' + loss_ftype + '_spearman')
+    # spearman_corr
+    saveFig(history=history,
+            key='spearman_corr',
+            val_key='val_spearman_corr',
+            title='Spearman Correlation',
+            ylabel='spearmanr',
+            datatype=data_type,
+            loss_ftype=loss_type
+            )
 
-    pyplot.plot(history.history['loss'])
-    pyplot.savefig(data_type + '_' + loss_ftype + '_loss')
+    # loss
+    saveFig(history=history,
+            key='loss',
+            val_key='val_loss',
+            title='Model Loss',
+            ylabel='loss',
+            datatype=data_type,
+            loss_ftype=loss_type
+            )
+
+    # acc
+    saveFig(history=history,
+            key='acc',
+            val_key='val_acc',
+            title='Model Accuracy',
+            ylabel='accuracy',
+            datatype=data_type,
+            loss_ftype=loss_type
+            )
 
 
 if __name__ == '__main__':
