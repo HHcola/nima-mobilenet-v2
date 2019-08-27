@@ -95,6 +95,8 @@ def train(train_image_paths,
                                                                 image_scores=val_image_scores),
                                   validation_steps=val_steps)
 
+    print(history.history.keys())
+    
     # plot metrics
     pyplot.plot(history.history['pearson_correlation'])
     pyplot.savefig(data_type + '_' + loss_ftype + '_pearson.png')
