@@ -40,7 +40,8 @@ def train(train_image_paths,
           epochs,
           steps_epoch,
           val_steps,
-          loss_ftype):
+          loss_ftype,
+          data_type):
     if loss_ftype == 'med':
         loss_fun = earth_mover_loss
         base_model = MobileNet((image_size, image_size, 3), alpha=1.0, include_top=False, pooling='avg')
@@ -96,10 +97,13 @@ def train(train_image_paths,
 
     # plot metrics
     pyplot.plot(history.history['pearson_correlation'])
-    pyplot.savefig(loss_ftype + '_pearson.png')
+    pyplot.savefig(data_type + '_' + loss_ftype + '_pearson.png')
 
     pyplot.plot(history.history['spearman_corr'])
-    pyplot.savefig(loss_ftype + '_spearman')
+    pyplot.savefig(data_type + '_' + loss_ftype + '_spearman')
+
+    pyplot.plot(history.history['loss'])
+    pyplot.savefig(data_type + '_' + loss_ftype + '_loss')
 
 
 if __name__ == '__main__':
@@ -121,10 +125,12 @@ if __name__ == '__main__':
         ensure_dir_exists(ava_images_path)
         ensure_dir_exists(ava_score_path)
         X, Y = load_ava_data(ava_images_path, ava_score_path)
+        val_size = 5000
     else:
         ensure_dir_exists(tip_images_path)
         ensure_dir_exists(tip_score_path)
         X, Y = load_tid_data(tip_images_path, tip_score_path)
+        val_size = 500
 
     if loss_fun_type == 'med':
         loss_type = 'med'
@@ -133,15 +139,15 @@ if __name__ == '__main__':
 
     weights_type_name = '../weights/mobilenet_v2_' + data_type + '_' + loss_type + '_weights.h5'
 
-    train_images = X[:-5000]
-    train_scores = Y[:-5000]
-    val_images = X[-5000:]
-    val_scores = Y[-5000:]
+    train_images = X[:-val_size]
+    train_scores = Y[:-val_size]
+    val_images = X[-val_size:]
+    val_scores = Y[-val_size:]
 
     batch_size = 200
     epoch_size = 20
     steps_per_epoch = (train_images.size // batch_size)
-    val_steps_epoch = (5000. // batch_size)
+    val_steps_epoch = (val_size // batch_size)
 
     print('loss_fun_type = %s, weights_type_name = %s' % (loss_fun_type, weights_type_name))
 
@@ -155,5 +161,6 @@ if __name__ == '__main__':
           epochs=epoch_size,
           steps_epoch=steps_per_epoch,
           val_steps=val_steps_epoch,
-          loss_ftype=loss_type
+          loss_ftype=loss_type,
+          data_type=data_type
           )
