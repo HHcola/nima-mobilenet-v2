@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*
 import os
 import sys
+from shutil import copyfile
+
 sys.path.append(os.path.abspath("../"))
 
 import numpy as np
@@ -17,13 +19,13 @@ import tensorflow as tf
 from utils.score_utils import mean_score, std_score
 
 
-
 def evaluate(imgs,
              model_weights_path,
              save_path,
              target_size,
              rank_images,
-             loss_type
+             loss_type,
+             aim_img_save_path
              ):
     """
     evaluate
@@ -57,7 +59,7 @@ def evaluate(imgs,
             std = std_score(scores)
 
             file_name = Path(img_path).name.lower()
-            score_list.append((file_name, mean))
+            score_list.append((file_name, mean, std))
 
             print("Evaluating : ", img_path)
             print("NIMA Score : %0.3f +- (%0.3f)" % (mean, std))
@@ -67,18 +69,24 @@ def evaluate(imgs,
             print("*" * 40, "Ranking Images", "*" * 40)
             score_list = sorted(score_list, key=lambda x: x[1], reverse=True)
 
-            for i, (name, score) in enumerate(score_list):
-                print("%d)" % (i + 1), "%s : Score = %0.5f" % (name, score))
+            for i, (name, score, std) in enumerate(score_list):
+                print("%d)" % (i + 1), "%s : Score = %0.5f, Std = %0.5f" % (name, score, std))
 
         # save to file
         fo = open(save_path, 'a')
-        fo.write('===== begin ====')
-        for i, (name, score) in enumerate(score_list):
-            name_score = str(i + 1) + ',' + name + " Score = " + str(score)
+        fo.write('===== begin ====\n')
+        for i, (name, score, std) in enumerate(score_list):
+            name_score = str(i + 1) + ',' + name + " Score = " + str(score) + " Std = " + str(std)
             fo.write(name_score)
             fo.write('\n')
-        fo.write('===== end ====')
+        fo.write('===== end ====\n')
         fo.close()
+
+        # save image to file
+        name = score_list[0][0]
+        src = os.path.join(Path(imgs[0]).parent, name)
+        dst = os.path.join(aim_img_save_path, name)
+        copyfile(src, dst)
 
 
 if __name__ == '__main__':
@@ -110,29 +118,40 @@ if __name__ == '__main__':
 
     weights_path = '../weights/mobilenet_v2_' + data_type + '_' + loss_type + '_weights.h5'
 
-    if args.dir is not None:
-        print("Loading images from directory : ", args.dir)
-        imgs_path = Path(args.dir).files('*.png')
-        imgs_path += Path(args.dir).files('*.jpg')
-        imgs_path += Path(args.dir).files('*.jpeg')
-    else:
-        imgs_path = None
-
     resize_image = args.resize.lower() in ("true", "yes", "t", "1")
     target_image_size = (224, 224) if resize_image else None
     rank_images_score = args.rank.lower() in ("true", "yes", "t", "1")
 
-    if args.sf is None:
-        save_score_path = '../score/' + data_type + '_score'
-    else:
-        save_score_path = args.sf
+    file_dir = os.listdir(args.dir)
+    dirs = []
+    for dir_file in file_dir:
+        dir_file_path = os.path.join(args.dir, dir_file)
+        if os.path.isdir(dir_file_path):
+            dirs.append(dir_file)
 
-    print("evaluate : args.dir = %s, weights_path = %s, save_score_path = %s",
-          args.dir, weights_path, save_score_path)
-    evaluate(imgs=imgs_path,
-             model_weights_path=weights_path,
-             save_path=save_score_path,
-             target_size=target_image_size,
-             rank_images=rank_images_score,
-             loss_type=loss_type
-             )
+    for dir_name in dirs:
+        imgs_path = []
+        path = os.path.join(args.dir, dir_name)
+        if not os.path.exists(path + '/score'):
+            os.mkdir(path + '/score')
+        save_score_path = path + '/score/' + data_type + '_score'
+        imgs_path = Path(path).files('*.png')
+        imgs_path += Path(path).files('*.jpg')
+        imgs_path += Path(path).files('*.jpeg')
+
+        aim_path = os.path.join(args.dir, "aim")
+        if not os.path.exists(aim_path):
+            os.mkdir(aim_path)
+        aim_img_path = os.path.join(aim_path, dir_name)
+        if not os.path.exists(aim_img_path):
+            os.mkdir(aim_img_path)
+        print("evaluate : args.dir = %s, weights_path = %s, save_score_path = %s",
+              args.dir, weights_path, save_score_path)
+        evaluate(imgs=imgs_path,
+                 model_weights_path=weights_path,
+                 save_path=save_score_path,
+                 target_size=target_image_size,
+                 rank_images=rank_images_score,
+                 loss_type=loss_type,
+                 aim_img_save_path=aim_img_path
+                 )

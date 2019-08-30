@@ -48,6 +48,21 @@ def saveFig(history,
     pyplot.savefig(datatype + '_' + loss_ftype + '_' + ylabel + '.png')
 
 
+def saveTrainFig(history,
+            key,
+            title,
+            ylabel,
+            datatype,
+            loss_ftype
+            ):
+    pyplot.figure()
+    pyplot.plot(history.history[key])
+    pyplot.title(title)
+    pyplot.ylabel(ylabel)
+    pyplot.xlabel('epoch')
+    pyplot.savefig(datatype + '_' + loss_ftype + '_' + ylabel + '.png')
+
+
 def train(train_image_paths,
           train_image_scores,
           val_image_paths,
@@ -116,9 +131,8 @@ def train(train_image_paths,
     print(history.history.keys())
 
     # plot metrics
-    saveFig(history=history,
+    saveTrainFig(history=history,
             key='pearson_correlation',
-            val_key='val_pearson_correlation',
             title='Pearson Correlation',
             ylabel='pearson correlation',
             datatype=data_type,
@@ -126,9 +140,8 @@ def train(train_image_paths,
             )
 
     # spearman_corr
-    saveFig(history=history,
+    saveTrainFig(history=history,
             key='spearman_corr',
-            val_key='val_spearman_corr',
             title='Spearman Correlation',
             ylabel='spearmanr',
             datatype=data_type,
@@ -136,9 +149,8 @@ def train(train_image_paths,
             )
 
     # loss
-    saveFig(history=history,
+    saveTrainFig(history=history,
             key='loss',
-            val_key='val_loss',
             title='Model Loss',
             ylabel='loss',
             datatype=data_type,
@@ -146,9 +158,8 @@ def train(train_image_paths,
             )
 
     # acc
-    saveFig(history=history,
+    saveTrainFig(history=history,
             key='acc',
-            val_key='val_acc',
             title='Model Accuracy',
             ylabel='accuracy',
             datatype=data_type,
@@ -195,7 +206,7 @@ if __name__ == '__main__':
     val_scores = Y[-val_size:]
 
     batch_size = 200
-    epoch_size = 20
+    epoch_size = 10
     steps_per_epoch = (train_images.size // batch_size)
     val_steps_epoch = (val_size // batch_size)
 
